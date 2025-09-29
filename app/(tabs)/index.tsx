@@ -42,7 +42,7 @@ const checklistTypes = [
     id: 'entreepiste',
     title: 'Entrée piste',
     description: 'Procédures entrée de piste',
-    icon: ArrowUp,
+    icon: Move3D,
     color: '#9B59B6',
   },
   {
@@ -56,7 +56,7 @@ const checklistTypes = [
     id: 'approche',
     title: 'Approche',
     description: 'Procédures d\'approche',
-    icon: ArrowUp,
+    icon: ArrowDown,
     color: '#E74C3C',
   },
   {
