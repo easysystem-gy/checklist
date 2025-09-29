@@ -1,6 +1,6 @@
-# Guide de Contribution - Check-list Avion
+# Guide de Contribution - Check-list JRO
 
-Merci de votre intérêt pour contribuer à l'application Check-list Avion ! Ce guide vous aidera à participer efficacement au projet.
+Merci de votre intérêt pour contribuer à l'application Check-list JRO ! Ce guide vous aidera à participer efficacement au projet.
 
 ## 🚀 Comment contribuer
 
@@ -8,8 +8,8 @@ Merci de votre intérêt pour contribuer à l'application Check-list Avion ! Ce 
 ```bash
 # Fork le repository sur GitHub
 # Puis cloner votre fork
-git clone https://github.com/votre-username/checklist-avion.git
-cd checklist-avion
+git clone https://github.com/easysystem-gy/checklist.git
+cd checklist
 ```
 
 ### 2. Configuration de l'environnement
