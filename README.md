@@ -1,4 +1,4 @@
-# ✈️ Check-list Avion - Application Mobile
+# ✈️ Check-list JRO - Application Mobile
 
 Une application mobile professionnelle de check-lists pour pilotes d'avion, développée avec React Native et Expo.
 
@@ -26,8 +26,8 @@ Cette application remplace les check-lists papier traditionnelles par une soluti
 ### Développement local
 ```bash
 # Cloner le repository
-git clone https://github.com/votre-username/checklist-avion.git
-cd checklist-avion
+git clone https://github.com/easysystem-gy/checklist.git
+cd checklist
 
 # Installer les dépendances
 npm install
@@ -167,8 +167,8 @@ Les contributions sont les bienvenues ! Merci de :
 ## 📞 Support
 
 Pour toute question ou support :
-- Ouvrir une [issue](https://github.com/votre-username/checklist-avion/issues)
-- Email : support@checklist-avion.com
+- Ouvrir une [issue](https://github.com/votre-username/checklist/issues)
+- Email : support@checklist.com
 
 ## 🛩️ Sécurité
 
