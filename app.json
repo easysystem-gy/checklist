@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "bolt-expo-nativewind",
-    "slug": "checklist-avion",
+    "name": "Checklist",
+    "slug": "checklist",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "android": {
-      "package": "com.checklistavion.app",
+      "package": "com.checklist.app",
       "versionCode": 1,
       "compileSdkVersion": 34,
       "targetSdkVersion": 34,
@@ -47,7 +47,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "7b756840-bacf-4bb2-afaf-7c791801b4e1"
+        "projectId": "49d16a0f-76a4-45ef-bcea-908d892cf614"
       },
       "router": {}
     }

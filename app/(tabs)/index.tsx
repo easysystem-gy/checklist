@@ -39,11 +39,25 @@ const checklistTypes = [
     color: '#9B59B6',
   },
   {
+    id: 'entreepiste',
+    title: 'Entrée piste',
+    description: 'Procédures entrée de piste',
+    icon: ArrowUp,
+    color: '#9B59B6',
+  },
+  {
     id: 'decollage',
     title: 'Décollage',
     description: 'Procédures de décollage',
     icon: ArrowUp,
     color: '#27AE60',
+  },
+  {
+    id: 'approche',
+    title: 'Approche',
+    description: 'Procédures d\'approche',
+    icon: ArrowUp,
+    color: '#E74C3C',
   },
   {
     id: 'atterrissage',
@@ -65,7 +79,7 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.header}>
-          <Text style={styles.title}>Check-lists Avion</Text>
+          <Text style={styles.title}>Check-lists JRO</Text>
           <Text style={styles.subtitle}>Sélectionnez une procédure</Text>
         </View>
 

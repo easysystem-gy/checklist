@@ -131,7 +131,7 @@ export default function SettingsScreen() {
         </View>
 
         <View style={styles.appInfo}>
-          <Text style={styles.appInfoTitle}>Check-list Avion</Text>
+          <Text style={styles.appInfoTitle}>Check-list JRO</Text>
           <Text style={styles.appInfoVersion}>Version 1.0.0</Text>
           <Text style={styles.appInfoDescription}>
             Application développée pour les pilotes afin d'assurer 
