@@ -77,23 +77,32 @@ export default function HomeScreen() {
   const { settings } = useSettings();
   const colors = settings.darkMode ? DarkTheme : LightTheme;
   const [completedChecklists, setCompletedChecklists] = useState<Record<string, boolean>>({});
+  const [progressPercentages, setProgressPercentages] = useState<Record<string, number>>({});
 
   const loadChecklistsProgress = async () => {
     const completed: Record<string, boolean> = {};
+    const percentages: Record<string, number> = {};
 
     for (const checklist of checklistTypes) {
       try {
         const stored = await AsyncStorage.getItem(`checklist_${checklist.id}`);
         if (stored) {
           const items = JSON.parse(stored);
-          const allCompleted = items.every((item: any) => item.completed);
-          completed[checklist.id] = allCompleted && items.length > 0;
+          const completedCount = items.filter((item: any) => item.completed).length;
+          const percentage = items.length > 0 ? Math.round((completedCount / items.length) * 100) : 0;
+
+          percentages[checklist.id] = percentage;
+          completed[checklist.id] = percentage === 100;
+        } else {
+          percentages[checklist.id] = 0;
         }
       } catch (error) {
         console.error('Erreur lors du chargement:', error);
+        percentages[checklist.id] = 0;
       }
     }
 
+    setProgressPercentages(percentages);
     setCompletedChecklists(completed);
   };
 
@@ -119,6 +128,7 @@ export default function HomeScreen() {
           {checklistTypes.map((checklist) => {
             const IconComponent = checklist.icon;
             const isCompleted = completedChecklists[checklist.id];
+            const percentage = progressPercentages[checklist.id] || 0;
 
             return (
               <TouchableOpacity
@@ -133,7 +143,12 @@ export default function HomeScreen() {
               >
                 <View style={styles.cardHeader}>
                   <IconComponent size={32} color={checklist.color} />
-                  <Text style={[styles.cardTitle, { color: colors.text }]}>{checklist.title}</Text>
+                  <View style={styles.cardTitleContainer}>
+                    <Text style={[styles.cardTitle, { color: colors.text }]}>{checklist.title}</Text>
+                    <Text style={[styles.cardPercentage, { color: checklist.color }]}>
+                      {percentage}%
+                    </Text>
+                  </View>
                   {isCompleted && (
                     <View style={styles.completedBadge}>
                       <CheckCircle2 size={20} color={colors.success} />
@@ -143,6 +158,14 @@ export default function HomeScreen() {
                 <Text style={[styles.cardDescription, { color: colors.textSecondary }]}>
                   {checklist.description}
                 </Text>
+                <View style={[styles.progressBarSmall, { backgroundColor: colors.progressBar }]}>
+                  <View
+                    style={[
+                      styles.progressFillSmall,
+                      { width: `${percentage}%`, backgroundColor: checklist.color }
+                    ]}
+                  />
+                </View>
               </TouchableOpacity>
             );
           })}
@@ -203,20 +226,42 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
+  cardTitleContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginLeft: 12,
+  },
   cardTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginLeft: 12,
-    flex: 1,
+  },
+  cardPercentage: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 8,
   },
   completedBadge: {
     backgroundColor: '#27AE6020',
     padding: 6,
     borderRadius: 20,
+    marginLeft: 8,
   },
   cardDescription: {
     fontSize: 14,
     lineHeight: 20,
+    marginBottom: 12,
+  },
+  progressBarSmall: {
+    width: '100%',
+    height: 4,
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  progressFillSmall: {
+    height: '100%',
+    borderRadius: 2,
   },
   footer: {
     alignItems: 'center',
