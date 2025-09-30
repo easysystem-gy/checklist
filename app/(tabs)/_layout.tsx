@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Plane, List, Settings } from 'lucide-react-native';
+import { List, Settings } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -27,15 +27,6 @@ export default function TabLayout() {
           title: 'Check-lists',
           tabBarIcon: ({ size, color }) => (
             <List size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="current"
-        options={{
-          title: 'En cours',
-          tabBarIcon: ({ size, color }) => (
-            <Plane size={size} color={color} />
           ),
         }}
       />
