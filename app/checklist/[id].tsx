@@ -7,10 +7,14 @@ import {
   ScrollView,
   SafeAreaView,
   Alert,
+  Platform,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ArrowLeft, RotateCcw, CheckCircle, Circle } from 'lucide-react-native';
+import * as Haptics from 'expo-haptics';
+import { useSettings } from '@/contexts/SettingsContext';
+import { LightTheme, DarkTheme } from '@/constants/Colors';
 
 // Données des check-lists prédéfinies
 const checklistData = {
@@ -112,9 +116,11 @@ interface ChecklistItem {
 export default function ChecklistScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
+  const { settings } = useSettings();
+  const colors = settings.darkMode ? DarkTheme : LightTheme;
   const [items, setItems] = useState<ChecklistItem[]>([]);
   const [progress, setProgress] = useState(0);
-  
+
   const checklistId = Array.isArray(id) ? id[0] : id;
   const checklist = checklistData[checklistId as keyof typeof checklistData];
 
@@ -167,17 +173,28 @@ export default function ChecklistScreen() {
   const toggleItem = async (index: number) => {
     const updatedItems = [...items];
     updatedItems[index].completed = !updatedItems[index].completed;
-    
+
     setItems(updatedItems);
     calculateProgress(updatedItems);
 
+    if (settings.soundEnabled && Platform.OS !== 'web') {
+      try {
+        if (updatedItems[index].completed) {
+          await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        } else {
+          await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }
+      } catch (error) {
+        console.error('Erreur haptics:', error);
+      }
+    }
+
     try {
       await AsyncStorage.setItem(
-        `checklist_${checklistId}`, 
+        `checklist_${checklistId}`,
         JSON.stringify(updatedItems)
       );
 
-      // Mettre à jour la check-list courante aussi
       const currentChecklist = {
         id: checklistId,
         title: checklist.title,
@@ -233,8 +250,8 @@ export default function ChecklistScreen() {
 
   if (!checklist) {
     return (
-      <SafeAreaView style={styles.container}>
-        <Text style={styles.errorText}>Check-list introuvable</Text>
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+        <Text style={[styles.errorText, { color: colors.danger }]}>Check-list introuvable</Text>
       </SafeAreaView>
     );
   }
@@ -243,41 +260,41 @@ export default function ChecklistScreen() {
   const totalCount = items.length;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity 
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.header, { backgroundColor: colors.headerBackground, borderBottomColor: colors.border }]}>
+        <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.back()}
         >
-          <ArrowLeft size={24} color="#FFFFFF" />
+          <ArrowLeft size={24} color={colors.text} />
         </TouchableOpacity>
-        
+
         <View style={styles.headerContent}>
-          <Text style={styles.title}>{checklist.title}</Text>
+          <Text style={[styles.title, { color: colors.text }]}>{checklist.title}</Text>
           <View style={styles.progressContainer}>
-            <View style={styles.progressBar}>
-              <View 
+            <View style={[styles.progressBar, { backgroundColor: colors.progressBar }]}>
+              <View
                 style={[
-                  styles.progressFill, 
-                  { width: `${progress}%` }
-                ]} 
+                  styles.progressFill,
+                  { width: `${progress}%`, backgroundColor: colors.success }
+                ]}
               />
             </View>
-            <Text style={styles.progressText}>
+            <Text style={[styles.progressText, { color: colors.textSecondary }]}>
               {completedCount}/{totalCount} ({Math.round(progress)}%)
             </Text>
           </View>
         </View>
 
-        <TouchableOpacity 
-          style={styles.resetButton}
+        <TouchableOpacity
+          style={[styles.resetButton, { backgroundColor: colors.danger }]}
           onPress={resetChecklist}
         >
           <RotateCcw size={20} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
 
-      <ScrollView 
+      <ScrollView
         style={styles.checklistContainer}
         contentContainerStyle={styles.checklistContent}
       >
@@ -286,22 +303,24 @@ export default function ChecklistScreen() {
             key={index}
             style={[
               styles.checklistItem,
-              item.completed && styles.completedItem
+              { backgroundColor: colors.cardBackground, borderLeftColor: colors.textSecondary },
+              item.completed && { backgroundColor: colors.completedBackground, borderLeftColor: colors.completedBorder }
             ]}
             onPress={() => toggleItem(index)}
             activeOpacity={0.7}
           >
             <View style={styles.checkButton}>
               {item.completed ? (
-                <CheckCircle size={24} color="#27AE60" />
+                <CheckCircle size={24} color={colors.success} />
               ) : (
-                <Circle size={24} color="#BDC3C7" />
+                <Circle size={24} color={colors.textSecondary} />
               )}
             </View>
-            
+
             <Text style={[
               styles.itemText,
-              item.completed && styles.completedText
+              { color: colors.text },
+              item.completed && { color: colors.textSecondary, textDecorationLine: 'line-through' }
             ]}>
               {item.text}
             </Text>
@@ -309,8 +328,8 @@ export default function ChecklistScreen() {
         ))}
 
         {progress === 100 && (
-          <View style={styles.completedBanner}>
-            <CheckCircle size={32} color="#27AE60" />
+          <View style={[styles.completedBanner, { backgroundColor: colors.success }]}>
+            <CheckCircle size={32} color="#FFFFFF" />
             <Text style={styles.completedBannerText}>
               Check-list terminée !
             </Text>
@@ -324,16 +343,13 @@ export default function ChecklistScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1A252F',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
     paddingTop: 40,
-    backgroundColor: '#2C3E50',
     borderBottomWidth: 1,
-    borderBottomColor: '#34495E',
   },
   backButton: {
     padding: 8,
@@ -345,7 +361,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#FFFFFF',
     marginBottom: 8,
     textAlign: 'center',
   },
@@ -355,23 +370,19 @@ const styles = StyleSheet.create({
   progressBar: {
     width: '100%',
     height: 6,
-    backgroundColor: '#34495E',
     borderRadius: 3,
     marginBottom: 5,
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#27AE60',
     borderRadius: 3,
   },
   progressText: {
     fontSize: 12,
-    color: '#BDC3C7',
     fontWeight: '600',
   },
   resetButton: {
     padding: 8,
-    backgroundColor: '#E74C3C',
     borderRadius: 6,
   },
   checklistContainer: {
@@ -383,16 +394,10 @@ const styles = StyleSheet.create({
   checklistItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2C3E50',
     padding: 20,
     marginBottom: 12,
     borderRadius: 10,
     borderLeftWidth: 4,
-    borderLeftColor: '#BDC3C7',
-  },
-  completedItem: {
-    backgroundColor: '#1E3A3A',
-    borderLeftColor: '#27AE60',
   },
   checkButton: {
     marginRight: 16,
@@ -401,16 +406,10 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 16,
-    color: '#FFFFFF',
     lineHeight: 22,
     flex: 1,
   },
-  completedText: {
-    color: '#BDC3C7',
-    textDecorationLine: 'line-through',
-  },
   completedBanner: {
-    backgroundColor: '#27AE60',
     padding: 20,
     borderRadius: 10,
     flexDirection: 'row',
@@ -425,7 +424,6 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   errorText: {
-    color: '#E74C3C',
     fontSize: 18,
     textAlign: 'center',
     marginTop: 50,

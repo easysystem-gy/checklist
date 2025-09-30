@@ -9,8 +9,12 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RotateCcw, CheckCircle } from 'lucide-react-native';
+import { useSettings } from '@/contexts/SettingsContext';
+import { LightTheme, DarkTheme } from '@/constants/Colors';
 
 export default function CurrentChecklistScreen() {
+  const { settings } = useSettings();
+  const colors = settings.darkMode ? DarkTheme : LightTheme;
   const [currentChecklist, setCurrentChecklist] = useState<any>(null);
   const [progress, setProgress] = useState(0);
 
@@ -83,11 +87,11 @@ export default function CurrentChecklistScreen() {
 
   if (!currentChecklist) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
         <View style={styles.emptyState}>
-          <CheckCircle size={64} color="#7F8C8D" />
-          <Text style={styles.emptyTitle}>Aucune check-list active</Text>
-          <Text style={styles.emptySubtitle}>
+          <CheckCircle size={64} color={colors.textSecondary} />
+          <Text style={[styles.emptyTitle, { color: colors.text }]}>Aucune check-list active</Text>
+          <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
             Sélectionnez une check-list depuis l'accueil pour commencer
           </Text>
         </View>
@@ -99,27 +103,27 @@ export default function CurrentChecklistScreen() {
   const totalCount = currentChecklist.items.length;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
-        <Text style={styles.title}>{currentChecklist.title}</Text>
+        <Text style={[styles.title, { color: colors.text }]}>{currentChecklist.title}</Text>
         <View style={styles.progressContainer}>
-          <View style={styles.progressBar}>
-            <View 
+          <View style={[styles.progressBar, { backgroundColor: colors.progressBar }]}>
+            <View
               style={[
-                styles.progressFill, 
-                { width: `${progress}%` }
-              ]} 
+                styles.progressFill,
+                { width: `${progress}%`, backgroundColor: colors.success }
+              ]}
             />
           </View>
-          <Text style={styles.progressText}>
+          <Text style={[styles.progressText, { color: colors.textSecondary }]}>
             {completedCount}/{totalCount} ({Math.round(progress)}%)
           </Text>
         </View>
       </View>
 
       <View style={styles.controls}>
-        <TouchableOpacity 
-          style={styles.resetButton}
+        <TouchableOpacity
+          style={[styles.resetButton, { backgroundColor: colors.danger }]}
           onPress={resetChecklist}
         >
           <RotateCcw size={20} color="#FFFFFF" />
@@ -129,12 +133,12 @@ export default function CurrentChecklistScreen() {
 
       <View style={styles.summary}>
         {progress === 100 ? (
-          <View style={styles.completedBanner}>
-            <CheckCircle size={24} color="#27AE60" />
+          <View style={[styles.completedBanner, { backgroundColor: colors.success }]}>
+            <CheckCircle size={24} color="#FFFFFF" />
             <Text style={styles.completedText}>Check-list terminée !</Text>
           </View>
         ) : (
-          <Text style={styles.summaryText}>
+          <Text style={[styles.summaryText, { color: colors.textSecondary }]}>
             Progression: {completedCount} étapes sur {totalCount} complétées
           </Text>
         )}
@@ -146,7 +150,6 @@ export default function CurrentChecklistScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1A252F',
   },
   header: {
     padding: 20,
@@ -155,7 +158,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#FFFFFF',
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -165,18 +167,15 @@ const styles = StyleSheet.create({
   progressBar: {
     width: '100%',
     height: 8,
-    backgroundColor: '#34495E',
     borderRadius: 4,
     marginBottom: 10,
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#27AE60',
     borderRadius: 4,
   },
   progressText: {
     fontSize: 16,
-    color: '#BDC3C7',
     fontWeight: '600',
   },
   controls: {
@@ -184,7 +183,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   resetButton: {
-    backgroundColor: '#E74C3C',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
@@ -202,7 +200,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   completedBanner: {
-    backgroundColor: '#27AE60',
     padding: 15,
     borderRadius: 8,
     flexDirection: 'row',
@@ -217,7 +214,6 @@ const styles = StyleSheet.create({
   },
   summaryText: {
     fontSize: 16,
-    color: '#BDC3C7',
     textAlign: 'center',
   },
   emptyState: {
@@ -229,14 +225,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FFFFFF',
     marginTop: 20,
     marginBottom: 10,
     textAlign: 'center',
   },
   emptySubtitle: {
     fontSize: 16,
-    color: '#BDC3C7',
     textAlign: 'center',
     lineHeight: 22,
   },

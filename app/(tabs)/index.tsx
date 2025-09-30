@@ -17,6 +17,8 @@ import {
   ArrowDown,
   CheckCircle2
 } from 'lucide-react-native';
+import { useSettings } from '@/contexts/SettingsContext';
+import { LightTheme, DarkTheme } from '@/constants/Colors';
 
 const checklistTypes = [
   {
@@ -72,6 +74,8 @@ const checklistTypes = [
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { settings } = useSettings();
+  const colors = settings.darkMode ? DarkTheme : LightTheme;
   const [completedChecklists, setCompletedChecklists] = useState<Record<string, boolean>>({});
 
   const loadChecklistsProgress = async () => {
@@ -104,11 +108,11 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.header}>
-          <Text style={styles.title}>Check-lists JRO</Text>
-          <Text style={styles.subtitle}>Sélectionnez une procédure</Text>
+          <Text style={[styles.title, { color: colors.text }]}>Check-lists JRO</Text>
+          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Sélectionnez une procédure</Text>
         </View>
 
         <View style={styles.checklistGrid}>
@@ -121,22 +125,22 @@ export default function HomeScreen() {
                 key={checklist.id}
                 style={[
                   styles.checklistCard,
-                  { borderLeftColor: checklist.color },
-                  isCompleted && styles.completedCard
+                  { backgroundColor: colors.cardBackground, borderLeftColor: checklist.color },
+                  isCompleted && { backgroundColor: colors.completedBackground }
                 ]}
                 onPress={() => handleChecklistSelect(checklist.id)}
                 activeOpacity={0.8}
               >
                 <View style={styles.cardHeader}>
                   <IconComponent size={32} color={checklist.color} />
-                  <Text style={styles.cardTitle}>{checklist.title}</Text>
+                  <Text style={[styles.cardTitle, { color: colors.text }]}>{checklist.title}</Text>
                   {isCompleted && (
                     <View style={styles.completedBadge}>
-                      <CheckCircle2 size={20} color="#27AE60" />
+                      <CheckCircle2 size={20} color={colors.success} />
                     </View>
                   )}
                 </View>
-                <Text style={styles.cardDescription}>
+                <Text style={[styles.cardDescription, { color: colors.textSecondary }]}>
                   {checklist.description}
                 </Text>
               </TouchableOpacity>
@@ -145,7 +149,7 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>
+          <Text style={[styles.footerText, { color: colors.textSecondary }]}>
             Voler en sécurité avec des check-lists structurées
           </Text>
         </View>
@@ -157,7 +161,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1A252F',
   },
   scrollContainer: {
     flexGrow: 1,
@@ -171,20 +174,17 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#FFFFFF',
     marginBottom: 8,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
-    color: '#BDC3C7',
     textAlign: 'center',
   },
   checklistGrid: {
     flex: 1,
   },
   checklistCard: {
-    backgroundColor: '#2C3E50',
     borderRadius: 12,
     padding: 20,
     marginBottom: 16,
@@ -198,9 +198,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  completedCard: {
-    backgroundColor: '#1E3A3A',
-  },
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -209,7 +206,6 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FFFFFF',
     marginLeft: 12,
     flex: 1,
   },
@@ -220,7 +216,6 @@ const styles = StyleSheet.create({
   },
   cardDescription: {
     fontSize: 14,
-    color: '#BDC3C7',
     lineHeight: 20,
   },
   footer: {
@@ -230,7 +225,6 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 14,
-    color: '#7F8C8D',
     textAlign: 'center',
     fontStyle: 'italic',
   },
