@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,13 +7,15 @@ import {
   ScrollView,
   SafeAreaView,
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import { 
-  Plane, 
-  PlayCircle, 
-  Move3D, 
-  ArrowUp, 
-  ArrowDown 
+import { useRouter, useFocusEffect } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  Plane,
+  PlayCircle,
+  Move3D,
+  ArrowUp,
+  ArrowDown,
+  CheckCircle2
 } from 'lucide-react-native';
 
 const checklistTypes = [
@@ -70,6 +72,32 @@ const checklistTypes = [
 
 export default function HomeScreen() {
   const router = useRouter();
+  const [completedChecklists, setCompletedChecklists] = useState<Record<string, boolean>>({});
+
+  const loadChecklistsProgress = async () => {
+    const completed: Record<string, boolean> = {};
+
+    for (const checklist of checklistTypes) {
+      try {
+        const stored = await AsyncStorage.getItem(`checklist_${checklist.id}`);
+        if (stored) {
+          const items = JSON.parse(stored);
+          const allCompleted = items.every((item: any) => item.completed);
+          completed[checklist.id] = allCompleted && items.length > 0;
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement:', error);
+      }
+    }
+
+    setCompletedChecklists(completed);
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      loadChecklistsProgress();
+    }, [])
+  );
 
   const handleChecklistSelect = (checklistId: string) => {
     router.push(`/checklist/${checklistId}` as any);
@@ -86,16 +114,27 @@ export default function HomeScreen() {
         <View style={styles.checklistGrid}>
           {checklistTypes.map((checklist) => {
             const IconComponent = checklist.icon;
+            const isCompleted = completedChecklists[checklist.id];
+
             return (
               <TouchableOpacity
                 key={checklist.id}
-                style={[styles.checklistCard, { borderLeftColor: checklist.color }]}
+                style={[
+                  styles.checklistCard,
+                  { borderLeftColor: checklist.color },
+                  isCompleted && styles.completedCard
+                ]}
                 onPress={() => handleChecklistSelect(checklist.id)}
                 activeOpacity={0.8}
               >
                 <View style={styles.cardHeader}>
                   <IconComponent size={32} color={checklist.color} />
                   <Text style={styles.cardTitle}>{checklist.title}</Text>
+                  {isCompleted && (
+                    <View style={styles.completedBadge}>
+                      <CheckCircle2 size={20} color="#27AE60" />
+                    </View>
+                  )}
                 </View>
                 <Text style={styles.cardDescription}>
                   {checklist.description}
@@ -159,6 +198,9 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  completedCard: {
+    backgroundColor: '#1E3A3A',
+  },
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -169,6 +211,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
     marginLeft: 12,
+    flex: 1,
+  },
+  completedBadge: {
+    backgroundColor: '#27AE6020',
+    padding: 6,
+    borderRadius: 20,
   },
   cardDescription: {
     fontSize: 14,
