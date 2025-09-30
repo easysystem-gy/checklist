@@ -207,18 +207,24 @@ export default function ChecklistScreen() {
   };
 
   const resetChecklist = () => {
-    Alert.alert(
-      'Réinitialiser la check-list',
-      'Êtes-vous sûr de vouloir remettre à zéro toutes les étapes ?',
-      [
-        { text: 'Annuler', style: 'cancel' },
-        { 
-          text: 'Réinitialiser', 
-          style: 'destructive',
-          onPress: performReset 
-        },
-      ]
-    );
+    if (Platform.OS === 'web') {
+      if (window.confirm('Êtes-vous sûr de vouloir remettre à zéro toutes les étapes ?')) {
+        performReset();
+      }
+    } else {
+      Alert.alert(
+        'Réinitialiser la check-list',
+        'Êtes-vous sûr de vouloir remettre à zéro toutes les étapes ?',
+        [
+          { text: 'Annuler', style: 'cancel' },
+          {
+            text: 'Réinitialiser',
+            style: 'destructive',
+            onPress: performReset
+          },
+        ]
+      );
+    }
   };
 
   const performReset = async () => {

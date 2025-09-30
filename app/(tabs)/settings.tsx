@@ -7,6 +7,7 @@ import {
   ScrollView,
   SafeAreaView,
   Switch,
+  Platform,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Sun, Moon, Trash2 } from 'lucide-react-native';
@@ -17,14 +18,30 @@ export default function SettingsScreen() {
   const { settings, updateDarkMode, updateSoundEnabled } = useSettings();
   const colors = settings.darkMode ? DarkTheme : LightTheme;
 
-  const clearAllData = async () => {
+  const clearAllData = () => {
+    if (Platform.OS === 'web') {
+      if (window.confirm('Êtes-vous sûr de vouloir effacer toutes les données des check-lists ? Cette action est irréversible.')) {
+        performClearAllData();
+      }
+    } else {
+      performClearAllData();
+    }
+  };
+
+  const performClearAllData = async () => {
     try {
       const keys = await AsyncStorage.getAllKeys();
       const checklistKeys = keys.filter(key => key.startsWith('checklist_'));
       await AsyncStorage.multiRemove([...checklistKeys, 'currentChecklist']);
-      console.log('Toutes les données ont été effacées');
+
+      if (Platform.OS === 'web') {
+        window.alert('Toutes les données ont été effacées avec succès.');
+      }
     } catch (error) {
       console.error('Erreur lors de l\'effacement des données:', error);
+      if (Platform.OS === 'web') {
+        window.alert('Erreur lors de l\'effacement des données.');
+      }
     }
   };
 

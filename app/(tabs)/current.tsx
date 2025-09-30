@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Alert,
+  Platform,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RotateCcw, CheckCircle } from 'lucide-react-native';
@@ -45,18 +46,24 @@ export default function CurrentChecklistScreen() {
   };
 
   const resetChecklist = () => {
-    Alert.alert(
-      'Réinitialiser la check-list',
-      'Êtes-vous sûr de vouloir remettre à zéro toutes les étapes ?',
-      [
-        { text: 'Annuler', style: 'cancel' },
-        { 
-          text: 'Réinitialiser', 
-          style: 'destructive',
-          onPress: performReset 
-        },
-      ]
-    );
+    if (Platform.OS === 'web') {
+      if (window.confirm('Êtes-vous sûr de vouloir remettre à zéro toutes les étapes ?')) {
+        performReset();
+      }
+    } else {
+      Alert.alert(
+        'Réinitialiser la check-list',
+        'Êtes-vous sûr de vouloir remettre à zéro toutes les étapes ?',
+        [
+          { text: 'Annuler', style: 'cancel' },
+          {
+            text: 'Réinitialiser',
+            style: 'destructive',
+            onPress: performReset
+          },
+        ]
+      );
+    }
   };
 
   const performReset = async () => {
