@@ -22,13 +22,12 @@ const checklistData = {
     title: 'Check-list Prévol',
     items: [
       'Documentation de vol vérifiée',
-      'Contrôle extérieur de l\'avion effectué',
+      'Contrôle extérieur effectué',
+      'Contrôle visuel moteur effectué',
       'Essence vérifiée (quantité et qualité)',
       'Niveaux d\'huile vérifiés',
       'Gouvernes libres et dégagées',
       'Instruments et commutateurs sur OFF',
-      'Ceintures et harnais attachés',
-      'Porte et verrière fermées et verrouillées',
     ],
   },
   demarrage: {
@@ -55,6 +54,7 @@ const checklistData = {
       'Transpondeur réglé',
       'Radio communication testée',
       'Trim ajusté pour le décollage',
+      'Vent vérifié',
       'Annonce radio roulage',
     ],
   },

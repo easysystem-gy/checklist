@@ -8,7 +8,7 @@ Cette application remplace les check-lists papier traditionnelles par une soluti
 
 ### 🎯 Fonctionnalités principales
 
-- **5 types de check-lists** : Prévol, Démarrage, Roulage, Décollage, Atterrissage
+- **7 types de check-lists** : Prévol, Démarrage, Roulage, Entrée de piste, Décollage, Approche, Atterrissage
 - **Validation tactile** : Boutons circulaires avec états visuels (gris/vert)
 - **Sauvegarde automatique** : État persistant même après fermeture
 - **Réinitialisation rapide** : Remise à zéro pour nouveau vol
@@ -55,53 +55,70 @@ eas build --platform android --profile production
 
 ### Prévol
 - Documentation de vol vérifiée
-- Contrôle extérieur de l'avion effectué
+- Contrôle extérieur effectué
+- Contrôle visuel moteur effectué
 - Essence vérifiée (quantité et qualité)
 - Niveaux d'huile vérifiés
 - Gouvernes libres et dégagées
 - Instruments et commutateurs sur OFF
-- Ceintures et harnais attachés
-- Porte et verrière fermées et verrouillées
 
 ### Démarrage
-- Batterie principale ON
+- Frein de parking ON
+- Commande de vol bloquée en avant
+- Batterie principale ON'
 - Pompe à essence électrique ON
-- Mélange RICHE
-- Hélice PETITE PROFONDEUR
 - Magnetos sur BOTH
 - Contacteur de démarrage ENGAGE
 - Huile pressurisation OK
-- Générateur ON
+- Réglage QNH
+- Radio ON et fréquence réglée
+- Huile Température 55°C minimum
 
 ### Roulage
+- Frein de parking OFF
 - Freins testés
 - Instruments de vol vérifiés
-- Compas magnétique ajusté
 - Transpondeur réglé
 - Radio communication testée
-- Contrôles de vol libres
 - Trim ajusté pour le décollage
-- Volets positionnés
+- Vent vérifié
+- Annonce radio roulage
 
-### Décollage
+### Entrée de piste
+- Ceintures et harnais attachés
+- Porte et verrière fermées et verrouillées
 - Piste libre et dégagée
 - Vent vérifié
-- Volets configurés
-- Trim réglé
-- Magnetos vérifiés
-- Mélange ajusté
-- Pleine puissance appliquée
-- Vitesse de rotation atteinte
+- Breifing passagé effectué
+- Radio alignement prelancement
+
+### Décollage
+- Frein rotor OFF
+- Manche libre et en avant
+- 2000 tr/min atteints
+- Pré-lancement ON
+- Rotor 150 tr/min manche arrière
+- Rotor 220 tr/min
+- Pré-lancement OFF
+- Puissance maximale
+- Vitesse de décollage atteinte
+- Montée initiale
+
+### Approche
+- Vérification météo
+- Vérification VAC
+- Radio annonce approche
 
 ### Atterrissage
+- Verticale terrain
+- Vent vérifié
 - Circuit d'atterrissage intégré
-- Train d'atterrissage sorti
-- Volets configurés
-- Mélange ajusté
 - Vitesse d'approche maintenue
 - Piste alignée
 - Arrondi et flare
 - Freinage et roulage
+- Manche dans le vent
+- Frein rotor ON
 
 ## 🎨 Design
 
