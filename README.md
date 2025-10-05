@@ -89,7 +89,7 @@ eas build --platform android --profile production
 - Porte et verrière fermées et verrouillées
 - Piste libre et dégagée
 - Vent vérifié
-- Breifing passagé effectué
+- Breifing passager effectué
 - Radio alignement prelancement
 
 ### Décollage
